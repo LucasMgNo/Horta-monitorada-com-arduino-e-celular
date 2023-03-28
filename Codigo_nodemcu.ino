@@ -14,26 +14,24 @@ FirebaseData firebaseData;
 void setup(){
   Serial.begin(9600);
   mySerial.begin(9600);
-  Serial.setTimeout(100);
-  mySerial.setTimeout(100);
 
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);               //Inicia o Wifi no esp8266 passando o usuario e senha
    while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
   }
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP());                   //imprimi o IP da rede conectada pra confirmar a conexao
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);    //inicia a conexao com o banco de dados
 }
 
 int humidAr, tempAr, temp1, temp2,humid1;    //variaveis globais das informacoes recebbidas dos sensores
 
 void loop(){
-  if (mySerial.available()){                //verifica se tem dados na porta serial
+  if (mySerial.available()){                               //verifica se tem dados na porta serial
   String recebido = mySerial.readStringUntil('\n');       //recebe os dados da porta serial
-  String msg = recebido;                    //atribui o dado recebido a uma string para ser feita a manipulacao nessa string
+  String msg = recebido;                                  //atribui o dado recebido a uma string para ser feita a manipulacao nessa string
   
-                              //a partir daqui sao feitas a logica para distinguir de qual sensor é a informação recebida, atraves de manipulação de string    
+                              //a partir daqui sao feitas as logicas para distinguir de qual sensor é a informação recebida, atraves de manipulação de string    
   if(msg.startsWith("T")){    //verifica a primeira letra de identificacao da variavel recebida para atribuir a sua respectiva variavel
     msg.remove(0,1);
     tempAr = msg.toInt();
