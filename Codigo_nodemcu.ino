@@ -1,6 +1,6 @@
 #include <SoftwareSerial.h>
 #include <ESP8266WiFi.h>        //biblioteca wifi do nodemcu
-#include <FirebaseArduino.h>    //biblioteca para o nodemcu conectar dom o firebase
+#include <FirebaseESP8266.h>    //biblioteca para o nodemcu conectar dom o firebase
 
 // Set these to run example.
 #define FIREBASE_HOST "horta-monitorada-default-rtdb.firebaseio.com"      //endereco do banco de dados
@@ -9,7 +9,7 @@
 #define WIFI_PASSWORD "tempos2525"
 
 SoftwareSerial mySerial (D1, D2);             //configurar as portas do nodemcu para funcionar com RX e TX
-
+FirebaseData firebaseData;
 
 void setup(){
   Serial.begin(9600);
@@ -62,8 +62,8 @@ void loop(){
   Serial.print("\n");
   delay(1000);
 
-  Firebase.setInt("ar/temperatura",tempAr);           //envia as variaveis recebidas pelo serial para o firebase
-  Firebase.setInt("ar/humidade",humidAr);
-  Firebase.setInt("solo1/temperatura",temp1);
-  Firebase.setInt("solo2/temperatura",temp2);
+  Firebase.setInt(firebaseData,"/ar/temperatura",tempAr);           //envia as variaveis recebidas pelo serial para o firebase
+  Firebase.setInt(firebaseData,"/ar/humidade", humidAr);
+  Firebase.setInt(firebaseData,"/solo1/temperatura", temp1);
+  Firebase.setInt(firebaseData,"/solo2/temperatura", temp2);
 }
