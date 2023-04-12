@@ -36,17 +36,20 @@ void loop(){
     msg.remove(0,1);
     tempAr = msg.toInt();
   } 
-  if (msg.startsWith("H")){
-    msg.remove(0,1);
-    humidAr = msg.toInt();
+  if (msg.startsWith("H")) {
+      msg.remove(0, 1);
+      if (msg.toInt() != humidAr && msg.toInt() >10){
+      humidAr = msg.toInt();
   }
-  if (msg.startsWith("t1")){
-    msg.remove(0,2);
-    temp1 = msg.toInt();
+  if (msg.startsWith("t1")) {
+      msg.remove(0, 2);
+      if (msg.toInt() != temp1 && msg.toInt() >10){
+      temp1 = msg.toInt();
   }
-  else if (msg.startsWith("t2")){
-    msg.remove(0,2);
-    temp2 = msg.toInt();
+  else if (msg.startsWith("t2")) {
+      msg.remove(0, 2);
+      if (msg.toInt() != temp2 && msg.toInt() >10){
+      temp2 = msg.toInt();
   }
   }
 
@@ -61,7 +64,11 @@ void loop(){
   delay(1000);
 
   Firebase.setInt(firebaseData,"/ar/temperatura",tempAr);           //envia as variaveis recebidas pelo serial para o firebase
+  delay(200);
   Firebase.setInt(firebaseData,"/ar/humidade", humidAr);
+  delay(200);
   Firebase.setInt(firebaseData,"/solo1/temperatura", temp1);
+  delay(200);
   Firebase.setInt(firebaseData,"/solo2/temperatura", temp2);
+  delay(1000);
 }
