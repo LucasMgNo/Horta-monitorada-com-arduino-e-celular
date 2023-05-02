@@ -1,0 +1,90 @@
+
+#include <SoftwareSerial.h>
+#include <ESP8266WiFi.h>
+#include <FirebaseESP8266.h>
+
+// Set these to run example.
+#define FIREBASE_HOST "horta-monitorada1-default-rtdb.firebaseio.com"
+#define FIREBASE_AUTH "EFUz4NNNQlnFp5MSa96jB1vLKLEjYCfh6iVkqeIP"
+#define WIFI_SSID "TddsFibra_Nem Tenta "
+#define WIFI_PASSWORD "tempos2525"
+
+SoftwareSerial mySerial(D1, D2);
+FirebaseData firebaseData;
+
+
+void setup() {
+
+  Serial.begin(115200);
+  mySerial.begin(115200);
+  //Serial.setTimeout(100);
+  //mySerial.setTimeout(100);
+
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  while (WiFi.status() != WL_CONNECTED) {
+    
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println(WiFi.localIP());
+ 
+  
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  pinMode(D3,OUTPUT);
+
+}
+
+int humidAr, tempAr, temp1, temp2, humid1;
+bool val;
+
+void loop() {
+
+  Firebase.getBool(firebaseData, "/bomba");
+  val = firebaseData.boolData();
+  Serial.print(val);
+  if(val){
+    digitalWrite(D3, HIGH);
+    }
+  else digitalWrite(D3, LOW);
+
+  if (mySerial.available() >0) {
+    String recebido = mySerial.readStringUntil('\n');
+    String msg = recebido;
+
+    if (msg.startsWith("T")) {
+      msg.remove(0, 1);
+      if (msg.toInt() != tempAr && msg.toInt() >10){
+      tempAr = msg.toInt();
+      Firebase.setInt(firebaseData, "/ar/temperatura", tempAr);
+    }}
+    if (msg.startsWith("H")) {
+      msg.remove(0, 1);
+      if (msg.toInt() != humidAr && msg.toInt() >10){
+      humidAr = msg.toInt();
+      Firebase.setInt(firebaseData,"/ar/humidade", humidAr);
+    }}
+    if (msg.startsWith("t1")) {
+      msg.remove(0, 2);
+      if (msg.toInt() != temp1 && msg.toInt() >10){
+      temp1 = msg.toInt();
+      Firebase.setInt(firebaseData,"/solo1/temperatura", temp1);
+    } }
+    else if (msg.startsWith("t2")) {
+      msg.remove(0, 2);
+      if (msg.toInt() != temp2 && msg.toInt() >10){
+      temp2 = msg.toInt();
+      Firebase.setInt(firebaseData,"/solo2/temperatura", temp2);
+    }}}
+
+
+  Serial.print(humidAr);
+  Serial.print("\n");
+  Serial.print(tempAr);
+  Serial.print("\n");
+  Serial.print(temp1);
+  Serial.print("\n");
+  Serial.print(temp2);
+  Serial.print("\n");
+  delay(500);
+}
+
