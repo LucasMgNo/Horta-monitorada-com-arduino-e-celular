@@ -28,20 +28,18 @@ void setup() {
   }
   Serial.println(WiFi.localIP());
  
-  
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   pinMode(D3,OUTPUT);
-
 }
 
-int humidAr, tempAr, temp1, temp2, humid1;
-bool val;
 
 void loop() {
+  int humidAr, tempAr, temp1, temp2, humid1, humid2, humi1, humi2;
+  bool val;
 
   Firebase.getBool(firebaseData, "/bomba");
   val = firebaseData.boolData();
-  Serial.print(val);
+  Serial.println(val);
   if(val){
     digitalWrite(D3, HIGH);
     }
@@ -57,18 +55,35 @@ void loop() {
       tempAr = msg.toInt();
       Firebase.setInt(firebaseData, "/ar/temperatura", tempAr);
     }}
+
     if (msg.startsWith("H")) {
       msg.remove(0, 1);
       if (msg.toInt() != humidAr && msg.toInt() >10){
       humidAr = msg.toInt();
       Firebase.setInt(firebaseData,"/ar/humidade", humidAr);
     }}
+
     if (msg.startsWith("t1")) {
       msg.remove(0, 2);
       if (msg.toInt() != temp1 && msg.toInt() >10){
       temp1 = msg.toInt();
       Firebase.setInt(firebaseData,"/solo1/temperatura", temp1);
     } }
+
+    if (msg.startsWith("h1")) {
+      msg.remove(0, 2);
+      if (msg.toInt() != humid1){
+      humid1 = msg.toInt();
+      Firebase.setInt(firebaseData,"/solo1/humisolo1", humid1);
+    } }
+
+    if (msg.startsWith("h22")) {
+      msg.remove(0, 2);
+      if (msg.toInt() != humid2){
+      humid2 = msg.toInt();
+      Firebase.setInt(firebaseData,"/solo1/humisolo2", humid2);
+    } }
+
     else if (msg.startsWith("t2")) {
       msg.remove(0, 2);
       if (msg.toInt() != temp2 && msg.toInt() >10){
@@ -77,14 +92,10 @@ void loop() {
     }}}
 
 
-  Serial.print(humidAr);
-  Serial.print("\n");
-  Serial.print(tempAr);
-  Serial.print("\n");
-  Serial.print(temp1);
-  Serial.print("\n");
-  Serial.print(temp2);
-  Serial.print("\n");
+  Serial.println(humidAr); 
+  Serial.println(tempAr);
+  Serial.println(temp1);
+  Serial.println(temp2);
   delay(500);
 }
 
