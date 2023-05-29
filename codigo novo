@@ -5,9 +5,9 @@
 
 // Set these to run example.
 #define FIREBASE_HOST "horta-monitorada1-default-rtdb.firebaseio.com"
-#define FIREBASE_AUTH "EFUz4NNNQlnFp5MSa96jB1vLKLEjYCfh6iVkqeIP"
+#define FIREBASE_AUTH "aqui vai a chave de seguranca do seu banco de dados"
 #define WIFI_SSID "TddsFibra_Nem Tenta "
-#define WIFI_PASSWORD "tempos2525"
+#define WIFI_PASSWORD "Senha da internet"
 
 SoftwareSerial mySerial(D1, D2);
 FirebaseData firebaseData;
