@@ -5,7 +5,7 @@
 #define temphum A8   //sensor dht11 na porta A8
 #define temterra 2   //sensor dtemp do solo na porta 2
 #define humsolo A10  //sensor humidade do solo na porta A10
-#define sol A9       //sensor luminosidade na porta A9
+
 
 
 DHTStable DHT;
@@ -19,10 +19,10 @@ void setup() {
   pinMode(temphum, INPUT);
   pinMode(temterra, INPUT);
   pinMode(humsolo, INPUT);
-  pinMode(sol, INPUT);
+  pinMode(humsolo2, INPUT);
 }
 
-void loop() {                                         // T = temperatura ar, H = humidade ar, t1 = temp solo1, t2 = temp solo 2
+void loop() {                                                           // T = temperatura ar, H = humidade ar, t1 = temp solo1, t2 = temp solo 2
   String T = "T", H = "H", t1 = "t1", t2 = "t2", h1 = "h2", h2 = "h2";  //declarar strings para concatenar com a leitura
   DHT.read11(temphum);                            //inicia o sensor de temperatura e humidade
   float humidAr = DHT.getHumidity();              // recebe a humidade
@@ -36,10 +36,17 @@ void loop() {                                         // T = temperatura ar, H =
   Serial.println(T);                              // envia para a serial em formato de String
   delay(200);
   
+  //solo1
   int humidadesolo = analogRead(humsolo);
   int valor = map(humidadesolo, 1023,220,0,100);
   h1.concat(valor);
   Serial.println(valor);
+  
+  //Solo2:
+  int humidadesolo2 = analogRead(humsolo2);
+  int valor2 = map(humidadesolo2, 1023,220,0,100);
+  h2.concat(valor2);
+  Serial.println(h2);
 
   sensors.requestTemperatures();             //ativa o sensor de temperatura do solo
   float temp1 = sensors.getTempCByIndex(0);  //obtem a temperatura do solo1
