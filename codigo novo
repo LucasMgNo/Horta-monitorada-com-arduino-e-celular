@@ -29,21 +29,39 @@ void setup() {
   Serial.println(WiFi.localIP());
  
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
-  pinMode(D3,OUTPUT);
+  pinMode(D3,OUTPUT); //bomba1
+  pinMode(D4,OUTPUT); //bomba
 }
 
 
 void loop() {
-  int humidAr, tempAr, temp1, temp2, humid1, humid2, humi1, humi2;
-  bool val;
-
+  int humidAr, tempAr, temp1, temp2, humid1, humid2;
+  bool val1 , val2;
+//---------------------------------------
+  //bomba1
   Firebase.getBool(firebaseData, "/bomba");
-  val = firebaseData.boolData();
-  Serial.println(val);
-  if(val){
+  val1 = firebaseData.boolData();
+  Serial.println(val1);
+  if(val1){
+    digitalWrite(D3, LOW);
+    delay(5000);
     digitalWrite(D3, HIGH);
+    Firebase.setBool(firebaseData, "/bomba", false);
     }
-  else digitalWrite(D3, LOW);
+  else digitalWrite(D3, HIGH);
+
+  //bomba 2
+  Firebase.getBool(firebaseData, "/bomba2");
+  val2 = firebaseData.boolData();
+  if(val2){
+    digitalWrite(D4, LOW);
+    delay(5000);
+    digitalWrite(D4, HIGH);
+    Firebase.setBool(firebaseData, "/bomba2", false);
+    }
+  else digitalWrite(D4, HIGH);
+
+//----------------------------------------------------
 
   if (mySerial.available() >0) {
     String recebido = mySerial.readStringUntil('\n');
@@ -72,16 +90,19 @@ void loop() {
 
     if (msg.startsWith("h1")) {
       msg.remove(0, 2);
-      if (msg.toInt() != humid1){
+      if (msg.toInt() != humid1 && msg.toInt() < 100){
       humid1 = msg.toInt();
+      Serial.println(humid1);
       Firebase.setInt(firebaseData,"/solo1/humisolo1", humid1);
     } }
 
-    if (msg.startsWith("h22")) {
+    if (msg.startsWith("h2")) {
       msg.remove(0, 2);
-      if (msg.toInt() != humid2){
+      if (msg.toInt() != humid2 && msg.toInt() < 100){
       humid2 = msg.toInt();
-      Firebase.setInt(firebaseData,"/solo1/humisolo2", humid2);
+      Serial.print("---  ");
+      Serial.println(humid2);
+      Firebase.setInt(firebaseData,"/solo2/humisolo2", humid2);
     } }
 
     else if (msg.startsWith("t2")) {
@@ -90,12 +111,7 @@ void loop() {
       temp2 = msg.toInt();
       Firebase.setInt(firebaseData,"/solo2/temperatura", temp2);
     }}}
-
-
-  Serial.println(humidAr); 
-  Serial.println(tempAr);
-  Serial.println(temp1);
-  Serial.println(temp2);
+    
   delay(500);
 }
 
