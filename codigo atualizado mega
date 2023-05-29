@@ -5,7 +5,7 @@
 #define temphum A8   //sensor dht11 na porta A8
 #define temterra 2   //sensor dtemp do solo na porta 2
 #define humsolo A10  //sensor humidade do solo na porta A10
-
+#define humsolo2 A11
 
 
 DHTStable DHT;
@@ -20,6 +20,7 @@ void setup() {
   pinMode(temterra, INPUT);
   pinMode(humsolo, INPUT);
   pinMode(humsolo2, INPUT);
+  
 }
 
 void loop() {                                                           // T = temperatura ar, H = humidade ar, t1 = temp solo1, t2 = temp solo 2
